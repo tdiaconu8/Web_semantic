@@ -1,0 +1,46 @@
+1.
+
+SELECT DISTINCT ?winnerLabel
+WHERE {
+  ?winner p:P166 ?awardStat . # … with an awarded(P166) statement
+  ?awardStat ps:P166 wd:Q38104 . # … that has the value Nobel Prize in Physics (Q38104)
+  ?winner wdt:P569 ?birthdate .
+ 
+SERVICE wikibase:label { bd:serviceParam wikibase:language "en" . }
+}
+ORDER BY ?birthdate
+
+
+
+2.
+
+SELECT ?university ?universityLabel (COUNT(?university) as ?count)
+WHERE {
+  ?winner p:P166 ?awardStat . # … with an awarded(P166) statement
+  ?awardStat ps:P166 wd:Q38104 . # … that has the value Nobel Prize in Physics (Q38104)
+  ?winner wdt:P69 ?university .
+
+SERVICE wikibase:label { bd:serviceParam wikibase:language "en" . }
+}
+GROUP BY ?university ?universityLabel ?count
+ORDER BY DESC(?count)
+LIMIT 10
+
+
+3.
+
+SELECT DISTINCT ?winnerLabel 
+WHERE {
+  ?winner p:P166 ?awardStat . # … with an awarded(P166) statement
+  ?awardStat ps:P166 wd:Q38104 . # … that has the value Nobel Prize in Physics (Q38104)
+  ?winner wdt:P69 ?university .
+  ?university wdt:P17 ?universityCountry .
+  ?winner wdt:P19 ?birthPlace .
+  ?birthPlace wdt:P17 ?winnerCountry . 
+  FILTER (?winnerCountry != ?universityCountry)
+
+SERVICE wikibase:label { bd:serviceParam wikibase:language "en" . }
+}
+
+
+

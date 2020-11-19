@@ -1,0 +1,160 @@
+5.
+
+PREFIX h: <http://www.inria.fr/2007/09/11/humans.rdfs#>
+SELECT ?person ?shoesize
+WHERE
+{
+?person rdf:type h:Person
+?person h:shoesize ?shoesize
+}
+
+
+6.
+
+PREFIX h: <http://www.inria.fr/2007/09/11/humans.rdfs#>
+SELECT ?person ?shoesize
+WHERE
+{
+?person rdf:type h:Person
+?person h:shoesize ?shoesize
+OPTIONAL { ?person h:shoesize ?shoesize }
+}
+
+7.
+
+PREFIX h: <http://www.inria.fr/2007/09/11/humans.rdfs#>
+SELECT ?person ?shoesize
+WHERE
+{
+?person rdf:type h:Person
+?person h:shoesize ?shoesize
+OPTIONAL { ?person h:shoesize ?shoesize }
+FILTER (xsd:integer(?shoesize) > 8)
+}
+
+
+8.
+
+PREFIX h: <http://www.inria.fr/2007/09/11/humans.rdfs#>
+SELECT DISTINCT ?person
+WHERE
+{
+?person rdf:type h:Person
+ {?person h:shoesize ?shoesize
+  FILTER(xsd:integer(?shoesize) > 8)}
+UNION
+ {?person h:shirtsize ?shirtsize
+  FILTER(xsd:integer(?shirtsize) > 12)}
+}
+
+
+10.1
+
+PREFIX h: <http://www.inria.fr/2007/09/11/humans.rdfs#>
+SELECT ?x
+WHERE
+{
+{
+?x h:hasChild ?y
+}
+UNION
+{
+?y h:hasParent ?x
+}
+UNION
+{
+?y h:hasMother ?x
+}
+UNION
+{
+?y h:hasFather ?x
+}
+}
+
+
+10.2
+
+PREFIX h: <http://www.inria.fr/2007/09/11/humans.rdfs#>
+SELECT  DISTINCT ?x
+WHERE
+{
+{
+?x h:hasChild ?y
+}
+UNION
+{
+?y h:hasParent ?x
+}
+UNION
+{
+?y h:hasMother ?x
+}
+UNION
+{
+?y h:hasFather ?x
+}
+}
+
+
+11.
+
+PREFIX h: <http://www.inria.fr/2007/09/11/humans.rdfs#>
+SELECT ?person
+WHERE {
+?person rdf:type h:Person
+OPTIONAL {?person h:hasChild ?w }
+OPTIONAL {?x h:hasFather ?person}
+OPTIONAL {?y h:hasParent ?person}
+OPTIONAL {?z h:hasMother ?person}
+FILTER ( ! bound(?w))
+FILTER ( ! bound(?x))
+FILTER ( ! bound(?y))
+FILTER ( ! bound(?z))
+}
+
+
+12.
+
+PREFIX h: <http://www.inria.fr/2007/09/11/humans.rdfs#>
+SELECT DISTINCT ?person
+WHERE
+{
+?person rdf:type h:Person
+?person h:age ?age
+FILTER(xsd:integer(?age) > 100)
+}
+
+
+13.
+
+PREFIX h: <http://www.inria.fr/2007/09/11/humans.rdfs#>
+SELECT DISTINCT *
+WHERE
+{
+?x rdf:type h:Person
+?y rdf:type h:Person
+?x h:shirtsize ?shirtsizex
+?y h:shirtsize ?shirtsizey
+FILTER(xsd:integer(?shirtsizex) = xsd:integer(?shirtsizey)
+	&& ?x != ?y)
+}
+
+14.
+
+PREFIX h: <http://www.inria.fr/2007/09/11/humans.rdfs#>
+
+SELECT DISTINCT ?person
+WHERE
+{
+?person rdf:type h:Person
+?person rdf:type ?class
+FILTER( xsd:string(?class) != "http://www.inria.fr/2007/09/11/humans.rdfs#Man") 
+MINUS {
+SELECT DISTINCT ?person
+WHERE {
+?person rdf:type h:Man
+?person rdf:type ?class
+FILTER( xsd:string(?class) = "http://www.inria.fr/2007/09/11/humans.rdfs#Man") 
+}
+}
+}
