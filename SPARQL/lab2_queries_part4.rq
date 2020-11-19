@@ -1,0 +1,82 @@
+1.
+
+SELECT COUNT DISTINCT ?class
+WHERE 
+{
+?class a owl:Class
+}
+
+SELECT COUNT DISTINCT ?objectProperty
+WHERE 
+{
+?objectProperty a owl:ObjectProperty
+}
+
+SELECT COUNT DISTINCT ?datatypeProperty
+WHERE 
+{
+?datatypeProperty a owl:DatatypeProperty
+}
+
+
+2.
+
+SELECT DISTINCT ?winner ?birth
+WHERE { 
+  ?award rdfs:label "Nobel Prize in Physics"@en .
+  ?winner dbo:award ?award .
+  ?winner dbo:birthDate ?birth .
+}
+ORDER BY ?birth
+
+SELECT DISTINCT ?winner ?birth
+WHERE { 
+  ?award rdfs:label "Nobel Prize in Physics"@en .
+  ?winner dbo:award ?award .
+  ?winner dbo:birthDate ?birth
+  FILTER (REGEX(STR(?birth),"[0-9]{4}-[0-9]{2}-[0-9]{2}"))
+}
+ORDER BY ?birth
+
+
+3.
+
+SELECT ?university (count(?university) as ?count)
+WHERE { 
+  ?award rdfs:label "Nobel Prize in Physics"@en .
+  ?winner dbo:award ?award .
+  ?winner dbo:almaMater ?university .
+}
+ORDER BY DESC(?count)
+LIMIT 10
+
+
+4.
+
+SELECT DISTINCT ?winner
+WHERE { 
+  ?award rdfs:label "Nobel Prize in Physics"@en .
+  ?winner dbo:award ?award .
+  ?winner dbo:almaMater ?university .
+  ?university dbo:country ?universityCountry .
+  ?winner dbo:birthPlace ?birthPlace .
+  ?birthPlace dbo:country ?winnerCountry .
+  FILTER (?winnerCountry != ?universityCountry) .
+}
+
+
+5.
+
+SELECT DISTINCT ?song ?artist ?date
+WHERE
+{
+?song a dbo:Song .
+?song dbo:artist ?artist .
+?song dbo:releaseDate ?date
+FILTER(xsd:string(?artist) = "http://dbpedia.org/resource/Bruce_Springsteen"
+       && ?date > "1979-12-31"^^xsd:dateTime
+       && ?date < "1991-01-01"^^xsd:dateTime)
+}
+
+
+
